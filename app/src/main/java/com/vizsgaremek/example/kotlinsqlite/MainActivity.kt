@@ -1,35 +1,36 @@
 package com.vizsgaremek.example.kotlinsqlite
 //-- https://www.javatpoint.com/kotlin-android-sqlite-tutorial#
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_main.*
 import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.vizsgaremek.example.kotlinsqlite.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
+    lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
     //method for saving records in database
     fun saveRecord(view: View){
-        val id = u_id.text.toString()
-        val name = u_name.text.toString()
-        val email = u_email.text.toString()
+        val id = binding.uId.text.toString()
+        val name = binding.uName.text.toString()
+        val email = binding.uEmail.text.toString()
         val databaseHandler: DatabaseHandler= DatabaseHandler(this)
         if(id.trim()!="" && name.trim()!="" && email.trim()!=""){
             val status = databaseHandler.addEmployee(EmpModelClass(Integer.parseInt(id),name, email))
             if(status > -1){
                 Toast.makeText(applicationContext,"record save",Toast.LENGTH_LONG).show()
-                u_id.text.clear()
-                u_name.text.clear()
-                u_email.text.clear()
+                binding.uId.text.clear()
+                binding.uName.text.clear()
+                binding.uEmail.text.clear()
             }
         }else{
             Toast.makeText(applicationContext,"id or name or email cannot be blank",Toast.LENGTH_LONG).show()
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
         //creating custom ArrayAdapter
         val myListAdapter = MyListAdapter(this,empArrayId,empArrayName,empArrayEmail)
-        listView.adapter = myListAdapter
+        binding.listView.adapter = myListAdapter
     }
     //method for updating records based on user id
     fun updateRecord(view: View){
