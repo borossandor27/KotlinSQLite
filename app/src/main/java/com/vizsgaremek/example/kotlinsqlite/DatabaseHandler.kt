@@ -1,5 +1,6 @@
 package com.vizsgaremek.example.kotlinsqlite
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -20,9 +21,10 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
     override fun onCreate(db: SQLiteDatabase?) {
         // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         //creating table with fields
-        val CREATE_CONTACTS_TABLE = ("CREATE TABLE " + TABLE_CONTACTS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-                + KEY_EMAIL + " TEXT" + ")")
+        val CREATE_CONTACTS_TABLE = """CREATE TABLE $TABLE_CONTACTS(
+                $KEY_ID INTEGER PRIMARY KEY,
+                $KEY_NAME  TEXT,
+                $KEY_EMAIL TEXT)"""
         db?.execSQL(CREATE_CONTACTS_TABLE)
     }
 
@@ -47,6 +49,7 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
         return success
     }
     //method to read data
+    @SuppressLint("Range")
     fun viewEmployee():List<EmpModelClass>{
         val empList:ArrayList<EmpModelClass> = ArrayList<EmpModelClass>()
         val selectQuery = "SELECT  * FROM $TABLE_CONTACTS"
@@ -63,9 +66,9 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,
         var userEmail: String
         if (cursor.moveToFirst()) {
             do {
-                userId = cursor.getInt(cursor.getColumnIndex("id"))
-                userName = cursor.getString(cursor.getColumnIndex("name"))
-                userEmail = cursor.getString(cursor.getColumnIndex("email"))
+                userId = cursor.getInt(cursor.getColumnIndex(KEY_ID))
+                userName = cursor.getString(cursor.getColumnIndex(KEY_NAME))
+                userEmail = cursor.getString(cursor.getColumnIndex(KEY_EMAIL))
                 val emp= EmpModelClass(userId = userId, userName = userName, userEmail = userEmail)
                 empList.add(emp)
             } while (cursor.moveToNext())
